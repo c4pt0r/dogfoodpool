@@ -39,13 +39,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="http://twitter.github.com/bootstrap/examples/fluid.html#">狗食仓库 - {{ product }}</a>
+          <a class="brand" href="/">狗食仓库 - {{ product }}</a>
           <div class="btn-group pull-right">
           </div>
           <div class="nav-collapse">
             <ul class="nav"> 
-              <li><a href="./js/Bootstrap, from Twitter.html">About</a></li>
-              <li><a href="http://twitter.github.com/bootstrap/examples/fluid.html#contact">Contact</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -84,8 +82,6 @@
                   </tr>
                 </thead>
                 <tbody id="tablebody">
-                 
-                   
                 </tbody>
               </table>
            </div>
@@ -103,11 +99,9 @@
     <script>
      $(document).ready(function(){
         $('#adduser_modal').modal({show:false})
-        
 
         var loadList = function(){
               $.get('/list/{{ product }}', function(data){
-              console.log(data)
               $('#tablebody').html('')
               var obj = eval('[' + data + ']')[0]
               $.each(obj, function(i,val){
@@ -115,33 +109,32 @@
                       '<td>' + (i + 1) + '</td>' + 
                       '<td>' + val.key +'</td>' +
                       '<td>' + (val.log === undefined ? '': val.log) +'</td>' +
-                      '<td>' + val.is_enable +'</td>' +
+                      '<td><a href="javascript:void(0)" data-key="'+ val.key +'">' + val.is_enable +'</td>' +
                       '<td><button class="btn-mini btn btn-danger"><i class="icon-trash icon-white"></i></button></td>' +
                       '</tr>';
                     $('#tablebody').append($(item))
               })
-              
-
-
            })
-         }
-         loadList();
+        }
+        loadList();
 
         $('#btn_new').click(function(){
             $('#adduser_modal').modal('toggle')
         })
 
-
         $('#btn_submit').click(function(){
-            console.log('here')
             var uname = $('#input_uname').val()
-            
             $.post('/list/{{ product }}/add', {u:uname}, function(){
                 loadList();
                 $('#adduser_modal').modal('toggle')
             })
         })
-
+        
+        $('tr a').live('click', function(){
+            $.get('/list/{{ product }}/toggle?u=' + $(this).data('key'), function(data){
+                loadList();
+            })
+        })
 
      })
     </script>
