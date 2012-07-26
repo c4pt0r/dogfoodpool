@@ -6,6 +6,17 @@ import json
 
 app = Flask(__name__)
 
+# decorator
+def need_product(func):
+    def _dec(*args, **kw):
+        pn = kw['pn']
+        print pn
+        df = dogfoodproduct(pn)
+        print df
+        if df is None: return json.dumps({'ret':-1})
+        return func(*args, **kw)
+    return _dec
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -26,41 +37,49 @@ def do_addproduct():
     pool.add_product(pn)
     return 'OK'
 
-@app.route('/action/<pn>/<username>/<action>')
-def do_action(pn, username, action):
+@need_product
+@app.route('/action/<pn>/<action>')
+def do_action(pn, action):
     df = dogfoodproduct(pn)
-    if df is None: return json.dumps({'ret':-1})
+    username = request.args.get('u', '')
     df.record_action(username, action)
     return "OK"
 
+@need_product
+@app.route('/list/action/<pn>/<action>')
+def do_get_action_list(pn, action):
+    df = dogfoodproduct(pn)
+    return json.dumps(df.get_action_list(action))
+
+
 @app.route('/list/<pn>')
+@need_product
 def do_list(pn):
     df = dogfoodproduct(pn)
-    if df is None: return json.dumps({'ret':-1})
     items = df.get_users()
     return json.dumps(items)
 
+@need_product
 @app.route('/list/<pn>/add', methods=['POST'])
 def do_add(pn):
     df = dogfoodproduct(pn)
-    if df is None: return json.dumps({'ret':-1})
     if df.add_user(request.form.get('u', None)):
         return json.dumps({'ret': 1})
     return json.dumps({'ret':-1})
 
+@need_product
 @app.route('/list/<pn>/toggle')
 def do_remove(pn):
     df = dogfoodproduct(pn)
-    if df is None: return json.dumps({'ret':-1})
     uname = request.args.get('u', '')
     df.toggle_user_enable_status(uname)
     return json.dumps({'ret':1})
 
+@need_product
 # 检查用户是否在白名单中
 @app.route('/check/<pn>')
 def do_check(pn):
     df = dogfoodproduct(pn)
-    if df is None: return json.dumps({'ret':-1})
     if df.is_user_enable(request.args.get('u','')):
         return json.dumps({'ret': 1})
     return json.dumps({'ret':-1})

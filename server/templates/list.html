@@ -104,6 +104,11 @@
               $.get('/list/{{ product }}', function(data){
               $('#tablebody').html('')
               var obj = eval('[' + data + ']')[0]
+              if (obj.ret == -1) {
+                  alert('no such product')
+                  window.location.href = '/'
+                  return ;
+              }
               $.each(obj, function(i,val){
                     var item = '<tr>' +
                       '<td>' + (i + 1) + '</td>' + 

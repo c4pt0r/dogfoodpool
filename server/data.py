@@ -37,6 +37,11 @@ class DogFood:
         print key
         return self._redis.incr(key)
 
+    def get_action_list(self, action , user = '*',  date = '*'):
+        key = self._gen_action_key(action, user, date)
+        keys = self._redis.keys(key)
+        return [{'times' : json.loads(self._redis.get(key)), 'key' : key } for key in keys]
+
     def add_user(self, usr_key, usr_info = {}):
         if usr_key is None or len(usr_key) == 0: return False
         if self._redis.sadd(self._gen_key(), usr_key) > 0:
@@ -76,7 +81,7 @@ class DogFoodPool:
 
     def get_product(self, pn):
         if not self._redis.exists('%s.%s' % (self._product_prefix, pn)):
-            self.add_product(pn)
+            return None
         is_enable = self._redis.hget('%s.%s' %(self._product_prefix, pn), 'enable')
         if is_enable == 0:
             return None
