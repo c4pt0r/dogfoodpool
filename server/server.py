@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#encoding=utf-8
 from flask import Flask,  request, render_template
 from data import dogfoodproduct, pool
 import json
@@ -44,7 +45,7 @@ def do_add(pn):
     df = dogfoodproduct(pn)
     if df is None: return json.dumps({'ret':-1})
     if df.add_user(request.form.get('u', None)):
-        return json.dumps({'ret': 0})
+        return json.dumps({'ret': 1})
     return json.dumps({'ret':-1})
 
 @app.route('/list/<pn>/toggle')
@@ -53,15 +54,18 @@ def do_remove(pn):
     if df is None: return json.dumps({'ret':-1})
     uname = request.args.get('u', '')
     df.toggle_user_enable_status(uname)
+    return json.dumps({'ret':1})
 
+# 检查用户是否在白名单中
 @app.route('/check/<pn>')
 def do_check(pn):
     df = dogfoodproduct(pn)
     if df is None: return json.dumps({'ret':-1})
     if df.is_user_enable(request.args.get('u','')):
-        return json.dumps({'ret': 0})
+        return json.dumps({'ret': 1})
     return json.dumps({'ret':-1})
 
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
