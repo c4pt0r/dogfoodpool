@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://twitter.github.com/bootstrap/examples/fluid.html#about -->
+<html lang="en"><script type="text/javascript">window["_gaUserPrefs"] = { ioo : function() { return true; } }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>狗食仓库</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+   
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+   
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.js"></script> 
+    <script src="/static/bootstrap/js/bootstrap-modal.js"></script> 
+    <script>
+        $(document).ready(function(){
+
+            $('#addproduct_modal').modal({show:false})
+
+            var loadList = function (){
+                $.get('/productlist', function(data){
+                     var obj = eval('['+ data + ']')[0]
+                     $('#list').html('')
+                     $.each(obj, function(i, val) { 
+                          var line = '<li><a href="/' + val + '">' + val + '</a></li>';
+                          $('#list').append($(line));
+                     })
+                })
+            }
+            
+            loadList();
+            
+            $('#addproduct').click(function(){
+                
+              $('#addproduct_modal').modal('toggle')
+            })
+            
+            $('#submit_pn').click(function(){
+                var text = $('#input_pn').val()
+                if (text.length > 0){
+                    $.post('/addproduct', {'pn': text}, function(data){
+                        loadList()
+                    })
+                }
+            })
+        }) 
+    </script>
+    
+ </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://twitter.github.com/bootstrap/examples/fluid.html#">狗食仓库</a>
+          <div class="btn-group pull-right">
+          </div>
+          <div class="nav-collapse">
+             
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+<div id="addproduct_modal" class="modal hide fade">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">×</button>
+                          <h3>添加项目</h3>
+                        </div>
+                        <div class="modal-body">
+                            <form class="well form-search" > 
+                              <input type="text" id="input_pn" class="input-large search-query" placeholder="项目名称..."/> 
+                             <button type="submit" class="btn" id="submit_pn"  data-dismiss="modal">提交</button>
+                             </form>
+                        </div>
+                         d
+                      </div>
+    <div class="container-fluid">
+          <div class="row-fluid">
+            <div class="span3">
+              <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                  <li class="nav-header">项目列表</li>
+                  <div id="list">
+                  </div>
+                   
+                  <hr/> 
+
+                  <li><button id="addproduct" class="btn btn-primary"><i  class="icon-plus icon-white"></i> 添加项目</button></li>
+                </ul>
+              </div><!--/.well -->
+                
+         
+          </div><!--/row-->
+              
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+
+
+  
+
+</body></html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://twitter.github.com/bootstrap/examples/fluid.html#about -->
+<html lang="en"><script type="text/javascript">window["_gaUserPrefs"] = { ioo : function() { return true; } }</script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>狗食仓库</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+   
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+ </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://twitter.github.com/bootstrap/examples/fluid.html#">狗食仓库 - {{ product }}</a>
+          <div class="btn-group pull-right">
+          </div>
+          <div class="nav-collapse">
+            <ul class="nav"> 
+              <li><a href="./js/Bootstrap, from Twitter.html">About</a></li>
+              <li><a href="http://twitter.github.com/bootstrap/examples/fluid.html#contact">Contact</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+                    <div id="adduser_modal" class="modal hide fade">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal">×</button>
+                          <h3>Add User</h3>
+                        </div>
+                        <div class="modal-body">
+                             
+                              <label>username</label>
+                              <input type="text" class="span3" id="input_uname" placeholder="Type something…"/>
+                              <span class="help-block">log</span>
+                              <input type="text" class="span3" placeholder="Type something…"/>
+                              <br/>
+                              <button  id="btn_submit" class="btn">Submit</button>
+                             
+                        </div>
+                    </div>
+    <div class="container-fluid">
+           <div class="span8">
+           <div class="">
+           <button class="btn" id="btn_new">添加新用户</button> <button class="btn ">批量导入 (csv)</button>
+           </div>
+           <br/>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>用户名</th>
+                    <th>备注</th>
+                    <th>状态</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tablebody">
+                 
+                   
+                </tbody>
+              </table>
+           </div>
+          
+        </div><!--/span-->
+      
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.js"></script> 
+    <script>
+     $(document).ready(function(){
+        $('#adduser_modal').modal({show:false})
+        
+
+        var loadList = function(){
+              $.get('/list/{{ product }}', function(data){
+              console.log(data)
+              $('#tablebody').html('')
+              var obj = eval('[' + data + ']')[0]
+              $.each(obj, function(i,val){
+                    var item = '<tr>' +
+                      '<td>' + (i + 1) + '</td>' + 
+                      '<td>' + val.key +'</td>' +
+                      '<td>' + (val.log === undefined ? '': val.log) +'</td>' +
+                      '<td>' + val.is_enable +'</td>' +
+                      '<td><button class="btn-mini btn btn-danger"><i class="icon-trash icon-white"></i></button></td>' +
+                      '</tr>';
+                    $('#tablebody').append($(item))
+              })
+              
+
+
+           })
+         }
+         loadList();
+
+        $('#btn_new').click(function(){
+            $('#adduser_modal').modal('toggle')
+        })
+
+
+        $('#btn_submit').click(function(){
+            console.log('here')
+            var uname = $('#input_uname').val()
+            
+            $.post('/list/{{ product }}/add', {u:uname}, function(){
+                loadList();
+                $('#adduser_modal').modal('toggle')
+            })
+        })
+
+
+     })
+    </script>
+
+</body></html>
