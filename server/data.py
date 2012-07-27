@@ -54,6 +54,9 @@ class DogFood:
             return True
         return False
 
+    def delete_user(self, user_key):
+        return self._redis.srem(self._gen_key(),user_key) and self._redis.delete(self._gen_user_key(user_key)) 
+
     def is_user_enable(self, usr_key):
         try:
             info = json.loads(self._redis.get(self._gen_user_key(usr_key)))

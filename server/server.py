@@ -6,7 +6,7 @@ import json
 
 app = Flask(__name__)
 
-# decorator
+# decorator: checking product is exists
 def need_product(func):
     def _dec(*args, **kw):
         pn = kw['pn']
@@ -68,12 +68,33 @@ def do_add(pn):
     return json.dumps({'ret':-1})
 
 @need_product
+@app.route('/list/<pn>/addmulti', methods=['POST'])
+def do_add(pn):
+    df = dogfoodproduct(pn)
+    names = request.form.get('u', '')
+    names = names.split('\n')
+    cnt = 0
+    for name in names:
+        if df.add_user(name.rstrip().lstrip()):
+            cnt+=1
+    return json.dumps({'ret':cnt})
+
+@need_product
 @app.route('/list/<pn>/toggle')
 def do_remove(pn):
     df = dogfoodproduct(pn)
     uname = request.args.get('u', '')
     df.toggle_user_enable_status(uname)
     return json.dumps({'ret':1})
+
+@need_product
+@app.route('/list/<pn>/delete')
+def do_delete(pn):
+    df = dogfoodproduct(pn)
+    uname = request.args.get('u', '')
+    if df.delete_user(uname):
+        return json.dumps({'ret':1})
+    return json.dumps({'ret':0})
 
 @need_product
 # 检查用户是否在白名单中
