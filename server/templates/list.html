@@ -92,6 +92,7 @@
                     <th>用户名</th>
                     <th>备注</th>
                     <th>状态</th>
+                    <th>加入日期</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -125,11 +126,14 @@
                   return ;
               }
               $.each(obj, function(i,val){
+                    var d1 = new Date(val.date * 1000)
+
                     var item = '<tr>' +
                       '<td>' + (i + 1) + '</td>' + 
                       '<td>' + val.key +'</td>' +
                       '<td>' + (val.log === undefined ? '': val.log) +'</td>' +
                       '<td><a href="javascript:void(0)" data-key="'+ val.key +'">' + val.is_enable +'</td>' +
+                      '<td>' + d1.getFullYear() +'/' + d1.getMonth() +'/' + d1.getDate()    +'</td>' +
                       '<td><button class="btn-mini btn btn-danger remove-btn" data-key="'+ val.key +'"><i class="icon-trash icon-white"></i></button></td>' +
                       '</tr>';
                     $('#tablebody').append($(item))

@@ -13,13 +13,13 @@ def setup_system(host, pn):
     global G_SERVER, G_PORT, G_URL, G_PN
     G_SERVER = host[0]
     G_PORT = host[1]
-    G_URL = 'http://' + host[0] + ':' + host[1]
+    G_URL = 'http://' + host[0] + ':' + str(host[1])
     G_PN = pn
 
-def do_action(action):
-    fp = urllib2.urlopen('%s/action/%s/%s' % (G_URL, pn, action))
+def do_action(action, uname):
+    fp = urllib2.urlopen('%s/action/%s/%s?u=%s' % (G_URL, G_PN, action, uname))
     return fp.read()
 
 def is_in_whitelist(uname):
-    fp = urllib2.urlopen('%s/%s/whitelist?u=' % (G_URL, pn,uname))
+    fp = urllib2.urlopen('%s/%s/whitelist?u=' % (G_URL, G_PN,uname))
     return fp.read()

@@ -42,8 +42,10 @@ def do_addproduct():
 def do_action(pn, action):
     df = dogfoodproduct(pn)
     username = request.args.get('u', '')
-    df.record_action(username, action)
-    return "OK"
+    if df.is_user_enable(username):
+        df.record_action(username, action)
+        return "OK"
+    return "user not enable"
 
 @need_product
 @app.route('/list/action/<pn>/<action>')
@@ -108,4 +110,4 @@ def do_check(pn):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    app.run(host='0.0.0.0')
