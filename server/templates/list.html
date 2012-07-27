@@ -20,6 +20,9 @@
       .modal {
         width:250px;
       }
+      .remove-btn{
+
+      };
     </style>
     <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/static/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -75,7 +78,7 @@
                           <h3>批量导入（每个用户名占一行）</h3>
                         </div>
                         <div class="modal-body">
-                              <textarea  id="input_unames" placeholder="Type something…" style="width:260px;height:200px"></textarea>
+                              <textarea id="input_unames" placeholder="Type something…" style="width:260px;height:200px"></textarea>
                               <br/>
                               <button  id="btn_addusers_submit" class="btn">Submit</button>
                         </div>
@@ -131,7 +134,7 @@
                       '<td>' + val.key +'</td>' +
                       '<td>' + (val.log === undefined ? '': val.log) +'</td>' +
                       '<td><a href="javascript:void(0)" data-key="'+ val.key +'">' + val.is_enable +'</td>' +
-                      '<td><button class="btn-mini btn btn-danger"><i class="icon-trash icon-white"></i></button></td>' +
+                      '<td><button class="btn-mini btn btn-danger remove-btn" data-key="'+ val.key +'"><i class="icon-trash icon-white"></i></button></td>' +
                       '</tr>';
                     $('#tablebody').append($(item))
               })
@@ -165,6 +168,13 @@
         
         $('tr a').live('click', function(){
             $.get('/list/{{ product }}/toggle?u=' + $(this).data('key'), function(data){
+                loadList();
+            })
+        })
+
+        $('.remove-btn').live('click',function(){
+            
+            $.get('/list/{{ product }}/delete?u=' + $(this).data('key'), function(data){
                 loadList();
             })
         })
